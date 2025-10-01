@@ -95,7 +95,7 @@ def load_save_file(filename):
             party.append(character)
         
         # Создаем босса
-        boss = Boss("Древний Дракон", 10)
+        boss = Boss("Древний Великан", 10)
         boss.hp = state["boss_hp"]
         boss.mp = state["boss_mp"]
         

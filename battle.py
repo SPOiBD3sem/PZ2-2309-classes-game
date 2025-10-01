@@ -39,6 +39,10 @@ class Battle(LoggerMixin):
     
     def save_state(self, filename):
         """Сохранение состояния боя в JSON"""
+        # Добавляем расширение .json если его нет
+        if not filename.endswith('.json'):
+            filename += '.json'
+        
         state = {
             "round": self.round,
             "boss_hp": self.boss.hp,
@@ -48,20 +52,31 @@ class Battle(LoggerMixin):
                     "name": char.name,
                     "class": char.__class__.__name__,
                     "hp": char.hp,
-                    "mp": char.mp
+                    "mp": char.mp,
+                    "max_hp": char.max_hp,
+                    "max_mp": char.max_mp
                 }
                 for char in self.party
             ]
         }
         
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(state, f, ensure_ascii=False, indent=2)
-        
-        self.add_log(f"Состояние боя сохранено в {filename}")
+        try:
+            with open(filename, 'w', encoding='utf-8') as f:
+                json.dump(state, f, ensure_ascii=False, indent=2)
+            
+            self.add_log(f"✓ Игра сохранена в файл: {filename}")
+            return True
+        except Exception as e:
+            self.add_log(f"✗ Ошибка при сохранении: {e}")
+            return False
     
     def load_state(self, filename):
         """Загрузка состояния боя из JSON"""
         try:
+            # Добавляем расширение .json если его нет
+            if not filename.endswith('.json'):
+                filename += '.json'
+                
             with open(filename, 'r', encoding='utf-8') as f:
                 state = json.load(f)
             
@@ -73,9 +88,14 @@ class Battle(LoggerMixin):
                 char.hp = char_data["hp"]
                 char.mp = char_data["mp"]
             
-            self.add_log(f"Состояние боя загружено из {filename}")
+            self.add_log(f"✓ Состояние боя загружено из {filename}")
+            return True
         except FileNotFoundError:
-            self.add_log("Файл сохранения не найден!")
+            self.add_log("✗ Файл сохранения не найден!")
+            return False
+        except Exception as e:
+            self.add_log(f"✗ Ошибка при загрузке: {e}")
+            return False
     
     def start_battle(self):
         """Запуск боя"""
@@ -219,8 +239,12 @@ class Battle(LoggerMixin):
                 if choice == 1:
                     target = self.choose_target("Выберите цель для атаки:", allow_self=False, allow_party=False, allow_boss=True)
                     if target:
-                        player.basic_attack(target)
-                    break
+                        success = player.basic_attack(target)
+                        if success:
+                            print("✓ Атака успешна!")
+                        break
+                    else:
+                        break
                 
                 elif choice == 2:
                     self.use_skill(player)
@@ -235,9 +259,12 @@ class Battle(LoggerMixin):
                     break
                 
                 elif choice == 5:
-                    filename = input("Введите имя файла для сохранения: ")
-                    self.save_state(filename)
-                    print("Игра сохранена!")
+                    filename = input("Введите имя файла для сохранения: ").strip()
+                    if filename:
+                        self.save_state(filename)
+                    else:
+                        print("Имя файла не может быть пустым!")
+                    # Продолжаем ход после сохранения
                     continue
                 
                 else:
@@ -256,8 +283,8 @@ class Battle(LoggerMixin):
         try:
             skill_choice = int(input("Выберите навык: ")) - 1
             if skill_choice < 0 or skill_choice >= len(player.skills):
-                print("Неверный выбор навыка!")
-                return
+                print("Неверный индекс навыка!")
+                return False
             
             skill = player.skills[skill_choice]
             
@@ -279,25 +306,19 @@ class Battle(LoggerMixin):
                 # Дополнительная проверка для защитных навыков
                 if (isinstance(skill, EffectSkill) and skill.effect_class == ShieldEffect and target == self.boss):
                     print("Нельзя наложить щит на босса!")
-                    return
+                    return False
                 
-                player.use_skill(skill_choice, target)
+                success = player.use_skill(skill_choice, target)
+                if success:
+                    print("✓ Навык использован успешно!")
+                return success
+            
+            return False
         
         except ValueError:
             print("Пожалуйста, введите число!")
-
-def load_from_state(self, state):
-    """Загрузка состояния боя"""
-    self.round = state["round"]
-    self.boss.hp = state["boss_hp"]
-    self.boss.mp = state["boss_mp"]
+            return False
     
-    for char_data, char in zip(state["party"], self.party):
-        char.hp = char_data["hp"]
-        char.mp = char_data["mp"]
-    
-    self.add_log(f"Состояние боя загружено!")
-
     def use_item(self, player):
         """Использование предмета игроком"""
         from items import HealthPotion, ManaPotion, Inventory
@@ -313,7 +334,15 @@ def load_from_state(self, state):
             # Предметы можно использовать на себя и союзников
             target = self.choose_target("Выберите цель:", allow_self=True, allow_party=True, allow_boss=False)
             if target:
-                inventory.use_item(item_choice, target)
+                success = inventory.use_item(item_choice, target)
+                if success:
+                    print("✓ Предмет использован успешно!")
+                return success
+            return False
         
         except ValueError:
             print("Пожалуйста, введите число!")
+            return False
+        except IndexError:
+            print("Неверный выбор предмета!")
+            return False
