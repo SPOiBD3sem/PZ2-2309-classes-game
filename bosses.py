@@ -59,7 +59,7 @@ class Boss(Character, LoggerMixin):
         Character.__init__(self, name, level)
         LoggerMixin.__init__(self)
         
-        self._hp = 500 + level * 50
+        self._hp = 300 + level * 50
         self._mp = 200 + level * 20
         self._strength = 30 + level * 3
         self._agility = 20 + level * 2

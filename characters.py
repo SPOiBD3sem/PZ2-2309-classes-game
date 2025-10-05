@@ -8,7 +8,7 @@ class Warrior(Character):
         super().__init__(name, level)
         self._hp = 150 + level * 20
         self._mp = 30 + level * 5
-        self._strength = 20 + level * 2
+        self._strength = 50 + level * 2
         self._agility = 15 + level * 1
         self._intelligence = 8 + level * 0.5
         self.max_hp = self._hp
@@ -18,8 +18,8 @@ class Warrior(Character):
         self.skills = [PowerStrike()]
     
     def basic_attack(self, target):
-        damage = 10 + self.strength * 0.3
-        damage = self.calculate_crit(damage, crit_chance=0.15)
+        damage = 50 + self.strength * 0.3
+        damage = self.calculate_crit(damage, crit_chance=0.45)
         actual_damage = target.take_damage(int(damage))
         print(f"{self.name} атакует {target.name} и наносит {actual_damage} урона!")
         return True
@@ -41,8 +41,8 @@ class Mage(Character):
     def __init__(self, name, level=1):
         super().__init__(name, level)
         self._hp = 80 + level * 10
-        self._mp = 80 + level * 15
-        self._strength = 8 + level * 0.5
+        self._mp = 130 + level * 15
+        self._strength = 42 + level * 0.5
         self._agility = 12 + level * 1
         self._intelligence = 25 + level * 3
         self.max_hp = self._hp
@@ -52,7 +52,7 @@ class Mage(Character):
         self.skills = [Fireball(), Shield()]
     
     def basic_attack(self, target):
-        damage = 8 + self.intelligence * 0.2
+        damage = 45 + self.intelligence * 0.2
         actual_damage = target.take_damage(int(damage))
         print(f"{self.name} атакует {target.name} магией и наносит {actual_damage} урона!")
         return True
@@ -73,10 +73,10 @@ class Healer(Character):
     
     def __init__(self, name, level=1):
         super().__init__(name, level)
-        self._hp = 100 + level * 12
+        self._hp = 90 + level * 12
         self._mp = 70 + level * 12
-        self._strength = 10 + level * 1
-        self._agility = 14 + level * 1.5
+        self._strength = 30 + level * 1
+        self._agility = 90 + level * 1.5
         self._intelligence = 18 + level * 2
         self.max_hp = self._hp
         self.max_mp = self._mp
@@ -85,7 +85,7 @@ class Healer(Character):
         self.skills = [Heal(), PoisonDart()]
     
     def basic_attack(self, target):
-        damage = 7 + self.strength * 0.2
+        damage = 35 + self.strength * 0.2
         actual_damage = target.take_damage(int(damage))
         print(f"{self.name} атакует {target.name} и наносит {actual_damage} урона!")
         return True

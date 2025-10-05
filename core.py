@@ -17,10 +17,10 @@ class Human(ABC):
         self.level = level
         self._hp = 100
         self._mp = 50
-        self._strength = 10
+        self._strength = 30
         self._agility = 10
         self._intelligence = 10
-        self.max_hp = 100
+        self.max_hp = 120
         self.max_mp = 50
         self.effects = []
     

@@ -31,9 +31,9 @@ class DamageSkill(Skill):
         
         # Расчет урона в зависимости от типа
         if self.damage_type == "physical":
-            damage = self.base_damage + caster.strength * 0.5
+            damage = self.base_damage + caster.strength * 1.5
         else:  # magical
-            damage = self.base_damage + caster.intelligence * 0.7
+            damage = self.base_damage + caster.intelligence * 1.7
         
         # Критический удар
         damage = caster.calculate_crit(damage)
@@ -57,7 +57,7 @@ class HealSkill(Skill):
         
         caster.mp -= self.mana_cost
         
-        heal_amount = self.base_heal + caster.intelligence * 0.8
+        heal_amount = self.base_heal + caster.intelligence * 1.2
         old_hp = target.hp
         target.hp = min(target.max_hp, target.hp + int(heal_amount))
         actual_heal = target.hp - old_hp
@@ -93,20 +93,20 @@ class EffectSkill(Skill):
 # Конкретные навыки
 class PowerStrike(DamageSkill):
     def __init__(self):
-        super().__init__("Мощный удар", 10, 2, 25)
+        super().__init__("Мощный удар", 15, 2, 25)
 
 class Fireball(DamageSkill):
     def __init__(self):
-        super().__init__("Огненный шар", 20, 3, 40, "magical")
+        super().__init__("Огненный шар", 30, 3, 40, "magical")
 
 class Heal(HealSkill):
     def __init__(self):
-        super().__init__("Лечение", 15, 2, 30)
+        super().__init__("Лечение", 10, 2, 40)
 
 class PoisonDart(EffectSkill):
     def __init__(self):
         from effects import PoisonEffect
-        super().__init__("Отравленный дротик", 12, 3, PoisonEffect, damage_per_turn=8, duration=3)
+        super().__init__("Отравленный дротик", 12, 3, PoisonEffect, damage_per_turn=20, duration=3)
 
 class Shield(EffectSkill):
     def __init__(self):

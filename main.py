@@ -167,7 +167,7 @@ def new_game():
     
     # Создание босса
     boss_level = 10
-    boss = Boss("Древний Дракон", boss_level)
+    boss = Boss("Древний Великан", boss_level)
     
     print(f"\nВаш противник: {boss}")
     input("Нажмите Enter чтобы начать бой...")
