@@ -1,6 +1,6 @@
 {
   "round": 1,
-  "boss_hp": 984,
+  "boss_hp": 959,
   "boss_mp": 400,
   "party": [
     {
@@ -15,16 +15,16 @@
       "name": "Трисс",
       "class": "Mage",
       "hp": 46,
-      "mp": 95,
+      "mp": 145,
       "max_hp": 90,
-      "max_mp": 95
+      "max_mp": 145
     },
     {
       "name": "Лютик",
       "class": "Healer",
-      "hp": 112,
+      "hp": 102,
       "mp": 82,
-      "max_hp": 112,
+      "max_hp": 102,
       "max_mp": 82
     }
   ]
